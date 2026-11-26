@@ -18,6 +18,7 @@ https://az9713.github.io/ai-deep-dives/
 
 | Page | Source |
 | --- | --- |
+| [8 ways to use Claude and Gemini 4 Neon together](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-gemini-neon-mark-kashef.html) | Mark Kashef |
 | [Ten Claude upgrades explained](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-upgrades-chase-ai.html) | Chase AI |
 | [How Anthropic builds software in 2026](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/anthropic-builds-software-pragmatic.html) | The Pragmatic Engineer |
 | [Seven Claude updates that matter](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-updates-paul-lipsky.html) | Paul J Lipsky |
