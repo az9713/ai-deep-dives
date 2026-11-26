@@ -18,6 +18,7 @@ https://az9713.github.io/ai-deep-dives/
 
 | Page | Source |
 | --- | --- |
+| [Build a 3D world with Astra + Sol](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/astra-sol-3d-studio-chase-ai.html) | Chase AI |
 | [Beyond Software Factories](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/beyond-software-factories-ray-amjad.html) | Ray Amjad |
 | [8 ways to use Claude and Gemini 4 Neon together](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-gemini-neon-mark-kashef.html) | Mark Kashef |
 | [Ten Claude upgrades explained](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-upgrades-chase-ai.html) | Chase AI |
