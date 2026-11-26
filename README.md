@@ -18,6 +18,7 @@ https://az9713.github.io/ai-deep-dives/
 
 | Page | Source |
 | --- | --- |
+| [Ten Claude upgrades explained](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-upgrades-chase-ai.html) | Chase AI |
 | [How Anthropic builds software in 2026](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/anthropic-builds-software-pragmatic.html) | The Pragmatic Engineer |
 | [Seven Claude updates that matter](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-updates-paul-lipsky.html) | Paul J Lipsky |
 | [Claude Ship — from pull request to approval](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-25/claude-ship-tutorial.html) | Christian Peverelli |
