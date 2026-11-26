@@ -14,6 +14,12 @@ https://az9713.github.io/ai-deep-dives/
 
 ## Pages
 
+### 2026-11-26
+
+| Page | Source |
+| --- | --- |
+| [Why Eddie Chang expects generative brain models within a year](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-26/generative-brain-models-eddie-chang.html) | MTS · Eddie Chang |
+
 ### 2026-11-25
 
 | Page | Source |
