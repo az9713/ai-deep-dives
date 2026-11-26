@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A transcript-grounded, timestamped summary of Katelyn Lesse on The Pragmatic Engineer.">
+  <title>How Anthropic builds software in 2026 · Katelyn Lesse</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #262720;
+      --muted: #53544a;
+      --paper: #faf8f0;
+      --panel: #efecdf;
+      --line: #d4cfc1;
+      --accent: #8a3525;
+      --serif: Georgia, "Times New Roman", serif;
+      --mono: ui-monospace, "Cascadia Mono", Consolas, monospace;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-padding-top: 1.25rem; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 1rem/1.65 system-ui, sans-serif; }
+    a { color: var(--accent); text-underline-offset: .22em; }
+    a:hover { text-decoration-thickness: .13em; }
+    a:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: 2px; }
+    .wrap { width: min(72rem, 100% - clamp(2rem, 8vw, 7rem)); margin-inline: auto; }
+    .hero { background: #2b3026; color: var(--paper); padding: clamp(2.5rem, 7vw, 6rem) 0 clamp(2.5rem, 6vw, 4.75rem); }
+    .hero a { color: #ffd4b7; }
+    .hero a:focus-visible { outline-color: #ffd4b7; }
+    h1, h2, h3 { font-family: var(--serif); line-height: 1.14; margin: 0; }
+    h1 { max-width: 16ch; font-size: clamp(2.7rem, 7vw, 6rem); font-weight: 400; letter-spacing: -.045em; }
+    h2 { font-size: clamp(1.75rem, 4vw, 2.55rem); font-weight: 400; letter-spacing: -.025em; }
+    h3 { font-size: clamp(1.25rem, 2.5vw, 1.67rem); font-weight: 400; }
+    p { margin: .7rem 0 0; }
+    .meta { margin: 0 0 1.2rem; color: #e9c7a3; font: .82rem/1.5 var(--mono); }
+    .dek { max-width: 62ch; font-size: clamp(1rem, 2vw, 1.24rem); margin-top: 1.3rem; color: #ece9de; }
+    .hero-link { margin-top: 1.4rem; }
+    .takeaways { padding: 2.35rem 0; border-bottom: 1px solid var(--line); }
+    .takeaways ul { display: grid; gap: 1rem; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; padding: 0; margin: 1rem 0 0; }
+    .takeaways li { background: var(--panel); padding: 1.15rem; border-top: 2px solid var(--accent); }
+    .takeaways strong { display: block; margin-bottom: .25rem; }
+    .content { display: grid; grid-template-columns: minmax(12rem, 15rem) minmax(0, 1fr); gap: clamp(1.8rem, 5vw, 4.5rem); padding: 2.4rem 0 2.8rem; }
+    nav h2 { font-size: 1.5rem; }
+    nav ol { list-style: none; padding: 0; margin: .7rem 0 0; }
+    nav a { display: grid; grid-template-columns: 4.1rem 1fr; gap: .15rem; padding: .32rem 0; text-decoration: none; font-size: .88rem; color: var(--ink); line-height: 1.35; }
+    nav a:hover { text-decoration: underline; }
+    nav span, .details span, .time { color: var(--accent); font-family: var(--mono); font-variant-numeric: tabular-nums; }
+    .chapter { display: grid; grid-template-columns: 5.25rem minmax(0, 1fr); gap: .65rem; border-bottom: 1px solid var(--line); padding: 1.65rem 0; }
+    .chapter p { max-width: 75ch; }
+    .chapter:target { background: var(--panel); }
+    .time { justify-self: start; align-self: start; white-space: nowrap; font-size: .9rem; padding: .12rem .35rem; border-radius: .25rem; background: var(--panel); }
+    .details { display: flex; flex-wrap: wrap; column-gap: 1rem; row-gap: .25rem; padding: 0; margin: .85rem 0 0; list-style: none; }
+    .details a { color: var(--muted); font-size: .8rem; }
+    .details span { white-space: nowrap; }
+    .next { border-top: 2px solid var(--accent); padding: 1.5rem 0 2rem; }
+    .next p, footer p { max-width: 78ch; }
+    footer { padding: 1.25rem 0 2.4rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; }
+    .skip { position: absolute; top: .25rem; left: .25rem; transform: translateY(-200%); padding: .5rem 1rem; background: var(--paper); z-index: 1; }
+    .skip:focus { transform: none; }
+    @media (max-width: 780px) {
+      .content { grid-template-columns: 1fr; }
+      nav ol { display: grid; grid-template-columns: 1fr 1fr; column-gap: 1rem; }
+    }
+    @media (max-width: 540px) {
+      nav ol, .takeaways ul, .chapter { grid-template-columns: 1fr; }
+      .chapter { gap: .45rem; }
+    }
+    @media print {
+      :root { --paper: white; --panel: white; }
+      .hero { padding: 0 0 1rem; background: white; color: var(--ink); }
+      .hero a, .hero .meta, .hero .dek { color: var(--ink); }
+      h1 { font-size: 36pt; }
+      nav, .skip { display: none; }
+      .content, .takeaways ul { display: block; padding-block: .7rem; }
+      .chapter { break-inside: avoid; }
+      .wrap { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to summary</a>
+  <header class="hero">
+    <div class="wrap">
+      <p class="meta">The Pragmatic Engineer · <time datetime="2026-11-25">November 25, 2026</time></p>
+      <h1>How Anthropic builds software in 2026</h1>
+      <p class="dek">Gergely Orosz interviews Katelyn Lesse, who leads Claude Platform engineering, about rewriting the Messages API, deciding which changes agents can ship and keeping humans accountable for production.</p>
+      <p class="hero-link"><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo">Watch the interview on YouTube</a></p>
+    </div>
+  </header>
+  <main class="wrap" id="main">
+    <section class="takeaways" aria-labelledby="takeaways-title">
+      <h2 id="takeaways-title">Key takeaways</h2>
+      <ul>
+        <li><strong>The Rust rewrite depended on a way to measure parity.</strong> Anthropic ran a parallel implementation against copies of live requests, compared signals it could inspect under its privacy rules and kept Python as a fallback during rollout. <a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1420s">23:40</a></li>
+        <li><strong>Autonomy grew one workflow at a time.</strong> Claude can handle routine changes with automated review and triage on-call alerts. Risky changes still go to human reviewers, and real incidents page the on-call engineer. <a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3887s">1:04:47</a></li>
+        <li><strong>The team still owns the system.</strong> A product manager can ship a developer-console feature with Claude. The team that operates the console keeps responsibility for reliability and incident response. <a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4383s">1:13:03</a></li>
+      </ul>
+    </section>
+    <div class="content">
+      <nav aria-labelledby="nav-title">
+        <h2 id="nav-title">Chapters</h2>
+        <ol>
+          <li><a href="#chapter-0"><span>00:00</span> Introduction</a></li>
+          <li><a href="#chapter-189"><span>03:09</span> From Betterment to Stripe</a></li>
+          <li><a href="#chapter-424"><span>07:04</span> How the Claude API works</a></li>
+          <li><a href="#chapter-621"><span>10:21</span> Why the team rewrote the Messages API in Rust</a></li>
+          <li><a href="#chapter-1420"><span>23:40</span> How shadow traffic verified the rewrite</a></li>
+          <li><a href="#chapter-1871"><span>31:11</span> Onboarding with Claude and finishing the migration</a></li>
+          <li><a href="#chapter-2675"><span>44:35</span> Building Claude Managed Agents</a></li>
+          <li><a href="#chapter-3239"><span>53:59</span> How engineering teams work</a></li>
+          <li><a href="#chapter-3523"><span>58:43</span> What agents handle on their own</a></li>
+          <li><a href="#chapter-3887"><span>1:04:47</span> How human code review is assigned</a></li>
+          <li><a href="#chapter-4001"><span>1:06:41</span> Claude on call</a></li>
+          <li><a href="#chapter-4171"><span>1:09:31</span> A product manager ships to production</a></li>
+          <li><a href="#chapter-4585"><span>1:16:25</span> Anthropic’s software factory</a></li>
+          <li><a href="#chapter-5053"><span>1:24:13</span> Why traditional coding interviews are being phased out</a></li>
+          <li><a href="#chapter-5304"><span>1:28:24</span> Levels, promotions and performance reviews</a></li>
+          <li><a href="#chapter-5601"><span>1:33:21</span> The software engineer identity crisis</a></li>
+          <li><a href="#chapter-6443"><span>1:47:23</span> Book recommendation</a></li>
+          <li><a href="#chapter-6492"><span>1:48:12</span> Orosz’s closing takeaways</a></li>
+        </ol>
+      </nav>
+      <article aria-labelledby="summary-title">
+        <h2 id="summary-title">Chapter-by-chapter summary</h2>
+        <section class="chapter" id="chapter-0" aria-labelledby="title-0">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=0s" aria-label="Watch Introduction at 00:00">00:00</a>
+          <div>
+            <h3 id="title-0">Introduction</h3>
+            <p>Gergely Orosz introduces Katelyn Lesse, who leads Claude Platform engineering at Anthropic. They discuss an AI-assisted rewrite of the Messages API, selective human review of agent-written code and a hiring process that puts candidates in front of coding agents.</p>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-189" aria-labelledby="title-189">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=189s" aria-label="Watch From Betterment to Stripe at 03:09">03:09</a>
+          <div>
+            <h3 id="title-189">From Betterment to Stripe</h3>
+            <p>Lesse switched from chemical engineering to computer science after an introductory course. At Betterment she joined a small team building a 401(k) product and moved into management while still building and reviewing code. She later joined Stripe Capital, the lending business, drawn by Stripe’s engineering standards and the pace at which it built new financial products.</p>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-424" aria-labelledby="title-424">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=424s" aria-label="Watch How the Claude API works at 07:04">07:04</a>
+          <div>
+            <h3 id="title-424">How the Claude API works</h3>
+            <p>Claude Platform sits between the applications and the inference layer, where models run on accelerators such as GPUs and TPUs. A request passes through authentication and authorization, then reaches a CPU-based service that handles tokenization, billing and safety checks. Tokens flow back through that service to the caller. The same Messages API serves Anthropic’s apps and external developers. Streams can stay open for up to about an hour, and a stateless API requires callers to send conversation state with each turn.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=506s"><span>08:26</span> One API for internal apps and external customers</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=547s"><span>09:07</span> The path of a request</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-621" aria-labelledby="title-621">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=621s" aria-label="Watch Why the team rewrote the Messages API in Rust at 10:21">10:21</a>
+          <div>
+            <h3 id="title-621">Why the team rewrote the Messages API in Rust</h3>
+            <p>Python made sense when a small team spanning research and product first built the API. As traffic surged, CPU capacity in the original single-region setup became a constraint. Anthropic added regions and found smaller efficiencies before choosing Rust for performance and memory safety. Claude wrote implementation code and helped engineers learn the language as they worked. Lesse saw Rust’s compile-time checks as especially valuable because an agent can iterate on compiler feedback before a human gets involved.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=666s"><span>11:06</span> The original Python monolith</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=906s"><span>15:06</span> Earlier attempts to add capacity</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1131s"><span>18:51</span> Learning Rust with Claude</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1381s"><span>23:01</span> Compiler feedback as a verification tool</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-1420" aria-labelledby="title-1420">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1420s" aria-label="Watch How shadow traffic verified the rewrite at 23:40">23:40</a>
+          <div>
+            <h3 id="title-1420">How shadow traffic verified the rewrite</h3>
+            <p>The team pivoted from porting individual components to building a parallel Rust version. A thin Python front door served live requests through the existing system and sent copies through the Rust version. Privacy rules barred engineers from inspecting customer prompts or completions, so they checked what was passed to inference and compared outgoing token counts. They drove mismatches down over time, began routing live requests to Rust with Python as a fallback, and removed the front door once confident. Lesse’s rough estimate was that engineers skipped deep line-by-line reading on about 80% of the agent-opened pull requests in this migration. They dug into the code where mismatches and other issues demanded it.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1463s"><span>24:23</span> The parallel Rust implementation</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1496s"><span>24:56</span> Privacy and what could be compared</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1601s"><span>26:41</span> Mismatch rate and fallback</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1690s"><span>28:10</span> Where engineers read the code closely</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-1871" aria-labelledby="title-1871">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1871s" aria-label="Watch Onboarding with Claude and finishing the migration at 31:11">31:11</a>
+          <div>
+            <h3 id="title-1871">Onboarding with Claude and finishing the migration</h3>
+            <p>New engineers ask Claude to explain the system from the codebase and internal sources connected through Model Context Protocol (MCP) servers. Claude can turn that context into a walkthrough or an interactive architecture diagram. Lesse estimates the Rust migration took about five to six months, including early investigation, with a small core team. Meanwhile, other teams kept shipping to Python. When a feature became generally available and triggered a spike in mismatches, the migration team added static checks that required new work to land in both versions for the final stretch.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=1956s"><span>32:36</span> Interactive onboarding</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2018s"><span>33:38</span> Internal sources through MCP</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2492s"><span>41:32</span> Timeline and team size</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2548s"><span>42:28</span> A new feature breaks parity</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-2675" aria-labelledby="title-2675">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2675s" aria-label="Watch Building Claude Managed Agents at 44:35">44:35</a>
+          <div>
+            <h3 id="title-2675">Building Claude Managed Agents</h3>
+            <p>The first design booted Claude Code inside a sandbox for every agent. A sandbox failure could kill the agent, startup added latency, tool credentials risked ending up inside the sandbox, and each running sandbox consumed CPU. The team moved the harness, which runs the agent’s control loop, onto a durable server. They stored session state separately and started sandboxes as work required them. A proxy injects credentials into outgoing requests from a separate vault. Lesse says the redesigned system averaged about one-third the CPU use of the original design. The team used Go for this project and built the underlying architecture for both Claude Code’s cloud experience and API customers.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2835s"><span>47:15</span> Claude Code as an internal customer</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2881s"><span>48:01</span> Four problems with the initial design</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=2973s"><span>49:33</span> Separate the harness, state and execution</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3039s"><span>50:39</span> Reported CPU use</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-3239" aria-labelledby="title-3239">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3239s" aria-label="Watch How engineering teams work at 53:59">53:59</a>
+          <div>
+            <h3 id="title-3239">How engineering teams work</h3>
+            <p>Lesse describes small teams of roughly five to ten people that know and operate their own systems. They skew more senior because engineers spend more time designing systems and coordinating across teams. Engineers use Claude Code and Cowork for interactive work, and much of the collaboration with cloud agents happens in Slack. Claude’s permissions can vary by context, such as a channel or direct message.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3260s"><span>54:20</span> Team size and seniority</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3387s"><span>56:27</span> Interactive tools and Slack workflows</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-3523" aria-labelledby="title-3523">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3523s" aria-label="Watch What agents handle on their own at 58:43">58:43</a>
+          <div>
+            <h3 id="title-3523">What agents handle on their own</h3>
+            <p>Engineers increasingly delegate a project or outcome that spans multiple pull requests. Agents can create follow-up tasks, post progress in Slack and ask for a decision when blocked. Some routine changes can go all the way to deployment after automated classification and review. Examples include software development kit (SDK) version bumps and repairs to flaky tests that make continuous integration (CI) fail.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3614s"><span>1:00:14</span> An SDK version bump from change to deployment</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3704s"><span>1:01:44</span> Persistent agents and flaky tests</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3776s"><span>1:02:56</span> Agents delegate follow-up work</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-3887" aria-labelledby="title-3887">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3887s" aria-label="Watch How human code review is assigned at 1:04:47">1:04:47</a>
+          <div>
+            <h3 id="title-3887">How human code review is assigned</h3>
+            <p>A Claude-based classifier runs on each change in the workflow Lesse describes. It decides whether to call in a human, how many reviewers are needed and which teams should look. A routine change can merge automatically when Claude verifies the intended outcome. Riskier changes, changes with possible side effects and changes to systems where the team still wants oversight go to humans. Lesse describes automatic merging as covering a small but growing set of change types.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3914s"><span>1:05:14</span> The classifier and review routing</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=3968s"><span>1:06:08</span> When humans review</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-4001" aria-labelledby="title-4001">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4001s" aria-label="Watch Claude on call at 1:06:41">1:06:41</a>
+          <div>
+            <h3 id="title-4001">Claude on call</h3>
+            <p>After shadowing the API on-call rotation for months, Claude began receiving alerts first to distinguish noise from actionable pages. A real alert is escalated to a human. While the person responds, Claude can investigate and propose a fix, and may begin work toward it. Lesse describes unattended resolution of real incidents as a goal. The current workflow mainly filters noise and gives people a head start on diagnosis.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4066s"><span>1:07:46</span> Shadowing the rotation</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4092s"><span>1:08:12</span> Filtering and escalating pages</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4149s"><span>1:09:09</span> The next autonomy threshold</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-4171" aria-labelledby="title-4171">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4171s" aria-label="Watch A product manager ships to production at 1:09:31">1:09:31</a>
+          <div>
+            <h3 id="title-4171">A product manager ships to production</h3>
+            <p>A technical product manager worked with Claude in Slack to build a prompt-cache diagnostics dashboard for the developer console. The dashboard helps developers understand cache hit rates. The API also exposes reasons for some cache misses. Engineers were available for review, and the developer experience team still owns the console and would be paged if it broke. Lesse draws the current boundary at changes to the core API, where she would still expect engineers to lead.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4230s"><span>1:10:30</span> Prompt-cache diagnostics</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4311s"><span>1:11:51</span> How the product manager built it</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4383s"><span>1:13:03</span> Who gets paged</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-4585" aria-labelledby="title-4585">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4585s" aria-label="Watch Anthropic’s software factory at 1:16:25">1:16:25</a>
+          <div>
+            <h3 id="title-4585">Anthropic’s software factory</h3>
+            <p>Lesse says the label is uncommon internally, but describes agents writing, verifying, reviewing and deploying changes, then monitoring software in production. One experiment uses a persistent quality-assurance agent to check a system against a description written by humans and propose fixes. Central Developer Acceleration builds shared infrastructure such as the Scion source-control system. Platform Acceleration builds team-specific workflows, including test repair. Individual engineers also build tools for bottlenecks they encounter, such as a Slack channel for coordinating multiple agents around a shared goal.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4627s"><span>1:17:07</span> From change to production monitoring</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4642s"><span>1:17:22</span> Persistent QA against a human-written specification</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4747s"><span>1:19:07</span> Shared and team-specific tooling</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=4949s"><span>1:22:29</span> The Slack multi-agent experiment</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-5053" aria-labelledby="title-5053">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5053s" aria-label="Watch Why traditional coding interviews are being phased out at 1:24:13">1:24:13</a>
+          <div>
+            <h3 id="title-5053">Why traditional coding interviews are being phased out</h3>
+            <p>Hand-coding performance had become a weaker signal for teams whose day-to-day work uses agents. Some candidates struggled in the coding round and did well in technical design and other rounds. Anthropic is experimenting with asking candidates to review agent-written code or designs or to build something with an agent. Technical design and discussions of past work continue. The team is still working out which exercises produce useful, consistent and fair assessments.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5085s"><span>1:24:45</span> The signal that weakened</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5148s"><span>1:25:48</span> Replacement exercises under trial</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5257s"><span>1:27:37</span> Grading and consistency</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-5304" aria-labelledby="title-5304">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5304s" aria-label="Watch Levels, promotions and performance reviews at 1:28:24">1:28:24</a>
+          <div>
+            <h3 id="title-5304">Levels, promotions and performance reviews</h3>
+            <p>Lesse says Anthropic still uses numeric levels, promotions and performance reviews. Hiring skews more senior, and elapsed time has become a weaker proxy for the complexity of a project. The measures she points to are impact, such as CPU and latency improvements, and the quality of cross-team coordination. She prefers giving feedback in real time and says peer feedback at Anthropic is mostly transparent.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5379s"><span>1:29:39</span> Why project duration is a weaker signal</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5453s"><span>1:30:53</span> Evidence of impact</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5531s"><span>1:32:11</span> Direct feedback</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-5601" aria-labelledby="title-5601">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5601s" aria-label="Watch The software engineer identity crisis at 1:33:21">1:33:21</a>
+          <div>
+            <h3 id="title-5601">The software engineer identity crisis</h3>
+            <p>Lesse understands why engineers who enjoyed the craft of writing code feel a loss. She sees room for greater ambition, from improving everyday software to building systems where many agents can work together. That work depends on engineering fundamentals such as identity, security, infrastructure and reliable coordination. Her advice is to learn with agents while developing deep expertise in the problems that grow harder as their scope expands.</p>
+            <ul class="details" aria-label="Moments in this chapter">
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5673s"><span>1:34:33</span> Aim at harder problems</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=5786s"><span>1:36:26</span> What has to work before teams of agents can deliver</a></li>
+              <li><a href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=6304s"><span>1:45:04</span> What engineers spend their time on</a></li>
+            </ul>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-6443" aria-labelledby="title-6443">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=6443s" aria-label="Watch Book recommendation at 1:47:23">1:47:23</a>
+          <div>
+            <h3 id="title-6443">Book recommendation</h3>
+            <p>Lesse recommends Andy Weir’s <em>Project Hail Mary</em>. She enjoyed the story of a human and an alien who have to learn to communicate, and sees a parallel with figuring out how to work with AI.</p>
+          </div>
+        </section>
+        <section class="chapter" id="chapter-6492" aria-labelledby="title-6492">
+          <a class="time" href="https://www.youtube.com/watch?v=9oNvKMd7xJo&amp;t=6492s" aria-label="Watch Orosz’s closing takeaways at 1:48:12">1:48:12</a>
+          <div>
+            <h3 id="title-6492">Orosz’s closing takeaways</h3>
+            <p>Orosz highlights Rust’s efficiency and compiler feedback, hiring experiments that could introduce more subjectivity, the product manager’s deployment and Claude-based onboarding. He points out that the onboarding example depends on Claude having access to the codebase and relevant internal systems. He treats Anthropic’s product-manager example as an observation and questions how widely it will transfer.</p>
+          </div>
+        </section>
+      </article>
+    </div>
+    <section class="next" aria-labelledby="next-title">
+      <h2 id="next-title">What’s Next</h2>
+      <p>Try the migration pattern on a small service. Before asking an agent to write a replacement, pick three observable behaviors that must match, replay the same recorded inputs against both versions, and deliberately introduce a regression. The test of your verifier is whether it catches the regression and tells you where to look.</p>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">
+      <p>Source method. The chapter summaries paraphrase the full transcript shown in YouTube’s transcript panel, which spans 00:00 to 1:50:42. Chapter links jump to the video’s chapter starts. The links below individual summaries point to specific passages. <a href="https://www.youtube.com/watch?v=9oNvKMd7xJo">Original episode and transcript</a></p>
+    </div>
+  </footer>
+</body>
+</html>
