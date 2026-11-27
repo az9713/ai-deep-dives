@@ -14,6 +14,12 @@ https://az9713.github.io/ai-deep-dives/
 
 ## Pages
 
+### 2026-11-27
+
+| Page | Source |
+| --- | --- |
+| [Five new rules for using Claude Code](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/five-new-rules-for-claude-code-bart-slodyczka.html) | Bart Slodyczka |
+
 ### 2026-11-26
 
 | Page | Source |
