@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Eric Tech’s seven Claude Skill levels, explained with timestamped captions, practical examples, and a with-and-without comparison.">
+<title>The Seven Levels of Claude Skills</title>
+<style>
+  :root {
+    color-scheme: light;
+    --paper: #f8f7f3;
+    --ink: #202923;
+    --muted: #50605a;
+    --rule: #d7ded6;
+    --link: #086357;
+    --header: #142823;
+    --accent: #a8eadc;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 1.2rem; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 1rem/1.65 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  .wrap { width: min(52rem, calc(100% - 2.5rem)); margin-inline: auto; }
+  a { color: var(--link); overflow-wrap: anywhere; text-underline-offset: .18em; }
+  a:focus-visible { outline: 3px solid #b45321; outline-offset: 3px; }
+  header { background: var(--header); color: #f8fcfa; border-bottom: 5px solid #80cbbc; padding: clamp(2.25rem, 7vw, 4.5rem) 0; }
+  header a { color: var(--accent); }
+  h1, h2 { font-family: Georgia, serif; line-height: 1.12; letter-spacing: -.025em; }
+  h1 { max-width: 18ch; margin: .6rem 0 1rem; font-size: clamp(2.55rem, 7vw, 4.5rem); }
+  h2 { font-size: clamp(1.65rem, 4vw, 2.35rem); margin: 0 0 .85rem; }
+  header p { color: #daeee7; font-size: 1.025rem; margin: 0; }
+  nav { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--rule); font-weight: 650; font-size: .93rem; }
+  article { padding-top: 1rem; }
+  article > p { max-width: 74ch; }
+  section { padding: clamp(1.65rem, 5vw, 3rem) 0; border-top: 1px solid var(--rule); }
+  section p, section ul { max-width: 74ch; }
+  section p:last-child { margin-bottom: 0; }
+  li + li { margin-top: .4rem; }
+  code { color: #174b40; font-size: .93em; }
+  figure { margin: 1.25rem 0 .15rem; break-inside: avoid; }
+  figure img { display: block; max-width: 100%; height: auto; border: 1px solid var(--rule); border-radius: .35rem; background: white; }
+  figcaption { color: var(--muted); margin-top: .45rem; font-size: .9rem; }
+  footer { padding: 1.5rem 0 2.5rem; color: var(--muted); font-size: .9rem; border-top: 1px solid var(--rule); }
+  @media print {
+    header { color: black; background: white; padding: 1rem 0; }
+    header p, header a { color: black; }
+    nav { display: none; }
+    .wrap { width: 100%; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <a href="https://az9713.github.io/ai-deep-dives/">AI Deep Dives</a>
+    <h1>The Seven Levels of Claude Skills</h1>
+    <p>Based on <a href="https://www.youtube.com/watch?v=S2bgAvhOync">Eric Tech’s YouTube video</a>. The screenshots show its transcript panel.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav aria-label="Tutorial contents">
+    <a href="#level-0">Level 0</a>
+    <a href="#level-1">Level 1</a>
+    <a href="#level-2">Level 2</a>
+    <a href="#level-3">Level 3</a>
+    <a href="#level-4">Level 4</a>
+    <a href="#level-5">Level 5</a>
+    <a href="#level-6">Level 6</a>
+    <a href="#next">What’s Next</a>
+  </nav>
+  <article>
+<p>Eric Tech’s framework starts at <strong>Level 0</strong> and ends at <strong>Level 6</strong>. The first levels show how to capture a workflow, the middle levels show how to package or borrow expertise, and the last level asks whether the skill still earns its place. Eric’s default is Level 2. Do a real task with Claude, capture your corrections, then turn the finished workflow into a skill. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=41s">Eric Tech’s video</a></p>
+
+<p>A skill is a reusable folder centered on a <code>SKILL.md</code> file. Its description tells Claude when it may be relevant. The file can point to supporting instructions, examples, templates, or scripts that Claude loads as needed. That makes the description part of how the skill works. It should name the tasks that ought to trigger it. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=98s">Skill basics · 1:38</a> · <a href="https://code.claude.com/docs/en/skills">Claude Code skills documentation</a></p>
+
+<section id="level-0">
+<h2>Level 0 · Write it by hand</h2>
+
+<p>Write the <code>SKILL.md</code> yourself. You specify when the skill applies and what Claude should do. Eric treats manual authoring as the baseline and moves quickly to letting Claude draft the file. Writing one tiny skill by hand is a practical way to learn which instructions belong in the description and which belong in the body. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=187s">Levels 0 and 1 · 3:07</a></p>
+
+</section>
+
+<section id="level-1">
+<h2>Level 1 · Start with Skill Creator</h2>
+
+<p>Use Anthropic’s Skill Creator when you already know the job you want Claude to repeat. Describe the inputs and the result, then give it a few strong examples. Eric’s example is a consultant who wants a one-page proposal based on call notes. A few proposals the consultant actually likes give Claude a concrete target for structure and tone. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=193s">Skill Creator example · 3:13</a> · <a href="https://support.claude.com/en/articles/12512198-how-to-create-custom-skills">Anthropic’s custom-skills guide</a></p>
+
+</section>
+
+<section id="level-2">
+<h2>Level 2 · Do the job once and capture it</h2>
+
+<p>Tell Claude at the start that you want it to track your corrections. Do the real job together and correct the output as you go. When you have a result you would use, ask Skill Creator to turn the workflow and the reusable corrections into a skill. Eric suggests updating the skill as new cases reveal gaps. A useful rule is to include a correction only when it should carry over to another run. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=220s">Level 2 · 3:40</a></p>
+
+<p><strong>Example for a video tutorial.</strong> If you correct Claude because a claim came from the video description, capture the rule that each explanation needs a caption passage at a specific timestamp. If a correction applies only to this creator or episode, keep it with that job.</p>
+
+</section>
+
+<section id="level-3">
+<h2>Level 3 · Record the workflow in Cowork</h2>
+
+<p>Use this when a workflow is easier to demonstrate on screen. In Cowork, open the composer’s <strong>+</strong> menu and choose <strong>Record a skill</strong>, then perform and narrate the task. Claude drafts a skill for you to review. Eric’s example is a recurring job on a supplier website that lacks a direct Claude integration. Anthropic documents the recorder for Claude for Mac and advises keeping passwords and sensitive material out of the recording. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=295s">Level 3 · 4:55</a> · <a href="https://support.claude.com/en/articles/12512198-how-to-create-custom-skills">Anthropic’s recording instructions</a></p>
+
+<figure>
+  <img src="data:image/jpeg;base64,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" alt="YouTube caption at 5:03 pointing to Record a skill in Cowork" width="357" height="71">
+  <figcaption><em>YouTube caption at 5:03.</em> <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=303s">Watch the Cowork instruction</a></figcaption>
+</figure>
+
+</section>
+
+<section id="level-4">
+<h2>Level 4 · Give Claude knowledge it can reuse</h2>
+
+<p>Eric uses the word “skill” for three kinds of reusable context. Each solves a different problem. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=321s">Level 4 · 5:21</a></p>
+
+<ul>
+  <li><strong>Data.</strong> Point Claude to a source of facts it can consult, such as customers’ purchase histories. The information can stay in its source while the skill tells Claude where and how to look.</li>
+  <li><strong>Artifact standards.</strong> Package brand colors, fonts, or templates so that documents and other deliverables follow the same conventions.</li>
+  <li><strong>Definitions.</strong> Explain a term or interaction pattern you use repeatedly. Eric cites Matt Pocock’s <code>grill-me</code>, which interviews you about a plan one question at a time.</li>
+</ul>
+
+</section>
+
+<section id="level-5">
+<h2>Level 5 · Adopt and adapt an existing skill</h2>
+
+<p>Eric starts with Anthropic’s skill library or Vercel’s skills.sh directory and looks for a skill that already handles the job. Read its instructions and inspect any bundled scripts before enabling it, then adjust it to match your inputs and workflow. The shared format makes skills easier to move between tools. A skill that calls particular tools or scripts still depends on those being available in your setup. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=492s">Level 5 · 8:12</a> · <a href="https://www.skills.sh/">skills.sh directory</a></p>
+
+</section>
+
+<section id="level-6">
+<h2>Level 6 · Test the skill against plain Claude</h2>
+
+<p>Pick a recurring task. Run it once with the skill enabled and once with it disabled. If the skill consistently helps, keep it. If the output is as good or better without it, trim or retire it. Eric uses “hobbling” for the case where old instructions hold back a more capable model. You can run the comparison without deleting files. <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=520s">Level 6 · 8:40</a> · <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=552s">The skill test · 9:12</a></p>
+
+<figure>
+  <img src="data:image/jpeg;base64,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" alt="YouTube caption at 9:14 describing the run with the skill disabled" width="357" height="47">
+  <figcaption><em>YouTube caption excerpt at 9:14.</em> <a href="https://www.youtube.com/watch?v=S2bgAvhOync&amp;t=554s">Watch Eric explain the comparison</a></figcaption>
+</figure>
+
+<p>For a more reliable comparison, use fresh sessions with the same model, prompt, files, and available tools. Change only the skill. Score a few tasks you did not use to write the skill and record factual errors, missing requirements, and minutes of cleanup. Check separately whether Claude chooses the skill on eligible prompts. A skill can produce excellent work when explicitly invoked and still fail to activate on its own.</p>
+
+</section>
+
+<section id="next">
+<h2>What's Next</h2>
+
+<p>Use your next YouTube tutorial as a Level 2 exercise. Capture the requirements that recur, including timestamped support for every substantive claim and a clear distinction between video frames and caption screenshots. Then run Level 6 on three different videos. Measure whether the skill reduces verification and cleanup time without increasing unsupported claims. Reuse the same videos when you change models so you can see whether the skill still pays for itself.</p>
+
+</section>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">Published <time datetime="2026-11-27">November 27, 2026</time>.</div>
+</footer>
+</body>
+</html>

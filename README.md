@@ -18,6 +18,7 @@ https://az9713.github.io/ai-deep-dives/
 
 | Page | Source |
 | --- | --- |
+| [The Seven Levels of Claude Skills](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/claude-skill-levels-eric-tech.html) | Eric Tech |
 | [Five new rules for using Claude Code](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/five-new-rules-for-claude-code-bart-slodyczka.html) | Bart Slodyczka |
 
 ### 2026-11-26
