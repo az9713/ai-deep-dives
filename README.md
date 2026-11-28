@@ -18,6 +18,7 @@ https://az9713.github.io/ai-deep-dives/
 
 | Page | Source |
 | --- | --- |
+| [The Rust migration as agentic engineering](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/rust-migration-agentic-engineering-ray-amjad.html) | Ray Amjad |
 | [Claude Apps and the three catches](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/claude-apps-eric-tech.html) | Eric Tech |
 | [Four Claude Design workflows from Ben AI](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/claude-design-workflows-ben-ai.html) | Ben AI |
 | [The Seven Levels of Claude Skills](https://az9713.github.io/ai-deep-dives/2026-11/2026-11-27/claude-skill-levels-eric-tech.html) | Eric Tech |

@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Rust Migration Loops</title>
+<meta name="description" content="Anthropic's Messages API migration from Python to Rust as agentic engineering, following Ray Amjad's interpretation, with sources tagged.">
+<style>
+:root{--bg:#f7f6f2;--paper:#ffffff;--ink:#1c2220;--muted:#58625d;--rule:#d6d9d2;--terra:#a8442a;
+--k-white:#ffffff;--k-blue:#e1ebf7;--k-peach:#fbe4d3;--good:#d9efdd;--code:#eef0eb;
+--l-inner:#4b6fa8;--l-outer:#6b7a74;--l-mem:#a8442a;
+--sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:dark){:root{--bg:#151917;--paper:#1c2220;--ink:#e5eae7;--muted:#9ba7a1;--rule:#36403c;--terra:#ec8c6c;
+--k-white:#222a27;--k-blue:#1e3045;--k-peach:#45301f;--good:#1f3a28;--code:#2a3230;--l-inner:#86a8de;--l-outer:#9aa8a2;--l-mem:#ec8c6c;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--sans)}
+.top,main,footer{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.top{padding-block:48px 8px}
+h1{font-size:clamp(28px,4.4vw,46px);line-height:1.1;margin:0 0 10px;letter-spacing:-.015em;text-wrap:balance}
+.thesis{font-size:clamp(19px,2.4vw,26px);color:var(--terra);font-weight:600;margin:0 0 14px}
+.sources{color:var(--muted);font-size:14px;max-width:85ch;margin:0 0 14px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 18px;list-style:none;padding:0;margin:0 0 16px;font-size:13px;color:var(--muted)}
+.legend li{display:flex;align-items:center;gap:6px}
+.sw{width:18px;height:12px;border:1px solid var(--rule);border-radius:3px;display:inline-block}
+.lesson-sw{background:var(--terra);border-color:var(--terra)}
+.toc{display:flex;flex-wrap:wrap;gap:6px}
+.toc a{font-size:13px;padding:4px 10px;border:1px solid var(--rule);border-radius:999px;color:var(--ink);text-decoration:none;background:var(--paper)}
+.toc a:hover{border-color:var(--terra)}
+section{padding-block:28px;border-top:1px solid var(--rule)}
+h2{font-size:22px;margin:0 0 16px;display:flex;gap:10px;align-items:baseline;text-wrap:balance}
+.num{font-family:var(--mono);font-size:14px;color:var(--terra);font-weight:600}
+p{margin:0 0 .6em}p:last-child{margin-bottom:0}
+.card{border:1px solid var(--rule);border-radius:10px;padding:12px 14px;font-size:15px;line-height:1.45;min-width:0}
+.card p{margin:0 0 .35em}
+.k-white{background:var(--k-white)}.k-blue{background:var(--k-blue)}.k-peach{background:var(--k-peach)}.k-green{background:var(--good)}
+.src{font-family:var(--mono);font-size:.78em;color:var(--muted);white-space:nowrap}
+code,pre{font-family:var(--mono);font-size:13px}
+code{background:var(--code);padding:1px 4px;border-radius:4px}
+pre.record{background:var(--code);border-radius:6px;padding:10px 12px;margin:8px 0;overflow-x:auto;line-height:1.5}
+a{color:var(--terra)}
+.flow-h{display:flex;align-items:stretch;gap:0}
+.flow-h>.card{flex:1 1 0}
+.arw{flex:0 0 28px;display:flex;align-items:center;justify-content:center}
+.arw::before{content:"\2192";color:var(--muted);font-size:20px}
+.flow-v{display:flex;flex-direction:column}
+.arw-d{display:flex;justify-content:center;height:24px;align-items:center}
+.arw-d::before{content:"\2193";color:var(--muted);font-size:18px;line-height:1}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lesson{color:var(--terra);font-weight:600;font-size:clamp(18px,2.2vw,24px);margin:18px 0 8px}
+.lesson.small{font-size:15px;margin-top:12px}
+.note{color:var(--muted);font-size:14px;font-style:italic}
+.split{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:24px}
+.aside{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;font-size:14.5px}
+ul,ol{margin:.3em 0 .6em;padding-left:1.3em}li{margin-bottom:.35em}
+.intro{color:var(--muted);margin-bottom:14px}
+.loop{border:2px solid var(--l-outer);border-radius:14px;padding:12px;background:color-mix(in srgb,var(--paper) 70%,transparent);min-width:0}
+.loop.memory{border-color:var(--l-mem)}.loop.inner{border-color:var(--l-inner);background:var(--paper)}
+.lh{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;margin:0 4px 12px}
+.lname{font-weight:700;font-size:16px}
+.memory>.lh .lname{color:var(--l-mem)}.inner>.lh .lname{color:var(--l-inner)}
+.lq{font-size:15px}.lts{font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--rule);border-radius:999px;padding:1px 8px}
+.loop-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px}
+.outer>.loop-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.col{display:flex;flex-direction:column;min-width:0}
+.steps{list-style:none;counter-reset:s;padding:0;margin:0;display:flex;flex-direction:column;gap:22px}
+.steps li{counter-increment:s;position:relative;margin:0;padding-left:30px}
+.steps li::before{content:counter(s);position:absolute;left:0;top:10px;width:22px;height:22px;border-radius:50%;background:var(--l-inner);color:var(--paper);font:600 12px/22px var(--mono);text-align:center}
+.steps li+li::after{content:"\2193";position:absolute;left:50%;top:-20px;color:var(--muted)}
+.back{font-size:13px;color:var(--muted);font-style:italic;margin:10px 4px 0;padding-left:16px;position:relative}
+.back::before{content:"\21BA";position:absolute;left:0;font-style:normal}
+.handoff{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 0 8px}
+.tblwrap{overflow-x:auto;margin-bottom:16px}
+table{border-collapse:collapse;width:100%;min-width:560px;background:var(--paper);font-size:14.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+thead th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+tbody th{font-weight:600}
+td.good{background:var(--good)}
+.prose{max-width:90ch;font-size:15.5px}
+.lessons ol{padding-left:1.5em}.lessons li{margin-bottom:.6em}
+.callout{margin-top:16px;border-left:3px solid var(--terra);background:var(--paper);padding:12px 16px;border-radius:0 8px 8px 0;color:var(--terra)}
+.callout strong{color:var(--terra)}
+footer{padding-block:24px 48px;color:var(--muted);font-size:13px;border-top:1px solid var(--rule)}
+@media (max-width:860px){
+ .flow-h{flex-direction:column}.arw{flex-basis:24px}.arw::before{content:"\2193"}
+ .split,.pair,.loop-grid,.outer>.loop-grid{grid-template-columns:1fr}
+}
+@media print{.toc{display:none}section{break-inside:avoid-page}}
+</style></head><body>
+<header class="top">
+  <h1>The Rust migration as agentic engineering</h1>
+  <p class="thesis">You decide what is correct. Claude decides how.</p>
+  <p class="sources">Sources: <span class="src">[A]</span> Anthropic, "Migrating our Messages API to Rust", Nov 25 2026  ·  <span class="src">[R]</span> Ray Amjad, <a href="https://www.youtube.com/watch?v=SfzT8cR8aek">video</a> (transcript in project folder)  ·  <span class="src">[O]</span> Addy Osmani, "Own the Outer Loop", Jul 15 2026.  Unmarked italic notes are my analysis.</p>
+  <ul class="legend" aria-label="Legend">
+    <li><span class="sw k-white"></span>fact or mechanism</li><li><span class="sw k-blue"></span>agent work</li>
+    <li><span class="sw k-peach"></span>human judgment</li><li><span class="sw lesson-sw"></span>the lesson</li>
+  </ul>
+  <nav class="toc" aria-label="Sections"><a href="#why">1 Why</a><a href="#correct">2 Correctness</a><a href="#signal">3 Signal</a><a href="#loops">4 Loops</a><a href="#results">5 Results</a><a href="#humans">6 Humans</a><a href="#lessons">7 Lessons</a><a href="#deeper">8 Deeper</a></nav>
+</header>
+<main>
+<section id="why"><h2><span class="num">1</span>Why rewrite at all</h2><div class="flow-h"><div class="card k-white "><p><strong>2023</strong>: Messages API written in Python, "basically a request forwarder". Shared deps with research and inference libraries made it hard to move. <span class="src">[A]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-white "><p><strong>Traffic grew ~1,800x</strong> (early 2024 to fall 2026). Python overhead on every object alloc, free and task handoff, per token. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-white "><p><strong>Incremental first</strong>: Rust output parser called from Python. CPU -8 to 10%, but each token now crossed the language boundary 3 times. Not worth the complexity. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-white "><p><strong>Full fork-and-rewrite</strong>: Claude wrote the core request path in ~1 week. By May 2026 Claude wrote &gt;80% of code Anthropic merged. <span class="src">[A]</span><span class="src">[R]</span></p></div></div><p class="lesson">Generation got cheap. Verification became the bottleneck. <span class="src">[A]</span><span class="src">[R]</span></p><p class="note"><em>2024 quote from the team: "We are not rewriting the API in go or rust!" The economics flipped once code generation stopped being the cost driver.</em> <span class="src">[A]</span></p></section>
+
+<section id="correct"><h2><span class="num">2</span>What counts as &quot;correct&quot;?</h2>
+  <div class="split"><div><div class="ladder"><div class="flow-h"><div class="card k-white "><p><strong>Rule</strong></p><p>Lean checks every proof step.</p><p>Signal: the failing step. <span class="src">[A]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-white "><p><strong>Examples</strong></p><p>Bun (Zig to Rust): TypeScript suite judges both runtimes unchanged.</p><p>Signal: the failing test. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-white "><p><strong>Existing system as oracle</strong></p><p>The live Python API, itself still changing.</p><p>Signal: none by default. Must be built. <span class="src">[A]</span></p></div></div></div><p class="lesson small">Less is written down as you move right; the team had to manufacture the signal.</p></div>
+  <aside class="aside"><p><strong>Why ~700 integration tests could not be the verifier</strong> <span class="src">[A]</span><span class="src">[R]</span></p><ul><li><em>Coupled</em>: tests ran Python in-process with Python mocks (billing, rate limits). Claude ported code and tests together, so a pass could mean a weakened test. Audit: <strong>&gt;100 weakened assertions</strong>.</li><li><em>Incomplete</em>: 20 binary flags = 2^20 ≈ 1.05M configs ≈ 12 days at 1 s each, per model, before varying prompts.</li><li><em>April 2026</em>: Rust passed <strong>~98% of tests</strong> but only <strong>~24% of production inputs</strong> matched.</li></ul></aside></div></section>
+
+<section id="signal"><h2><span class="num">3</span>Turning production into the verifier</h2>
+  <div class="flow-v"><div class="card k-white "><p><strong>Shadowing</strong>: a thin Python front door serves every request from Python and runs a shadow copy through Rust; compare both on the way in and out. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span>
+  <div class="pair"><div class="card k-white "><p><strong>Nondeterminism + billing</strong>: run the model once, replay its output into Rust. Any difference is then in the code, not the model, and the customer is billed once. <span class="src">[A]</span><span class="src">[R]</span></p></div><div class="card k-white "><p><strong>Privacy</strong>: nobody may read requests or replies, and the Python side kept changing. Record the <em>shape</em> of each difference, never its text. <span class="src">[A]</span><span class="src">[R]</span></p></div></div><span class="arw-d" aria-hidden="true"></span>
+  <div class="card k-white"><p><strong>Checkpointing</strong>: compare every stage (validate, resolve settings, build prompt, call model, sort output, stream, count usage) piece by piece; the first divergence localizes the bug. Record (made-up values):</p><pre class="record">step: build prompt
+piece: 2
+first diff: byte 17
+python: 190 B
+rust: 190 B</pre><p><span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-white "><p><strong>Fingerprint</strong> = step + piece + first-diff offset + length gap (+ hash). One bug leaves the same mark on every request it touches, so hundreds of thousands of records collapse into a handful of bugs. Fixing dominant fingerprint A revealed hidden B and C. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-blue "><p><strong>Dispatch</strong>: a script every 10 to 30 min groups records and alerts a coordinator Claude only on a <em>new</em> kind; it assigns one worker agent per kind and opens a Slack thread humans can steer. <span class="src">[A]</span><span class="src">[R]</span></p></div></div></section>
+
+<section id="loops"><h2><span class="num">4</span>Three nested verification loops</h2>
+  <p class="intro">Each loop catches what the one inside it misses. Read inner to outer. <span class="src">[A][R]</span></p>
+  <div class="loop memory"><header class="lh"><span class="lname"> Memory loop</span><span class="lq">why does it keep happening?</span><span class="lts">as corrections come in</span></header>
+    <div class="loop-grid">
+      <div class="loop outer"><header class="lh"><span class="lname"> Outer loop</span><span class="lq">is it gone in production?</span><span class="lts">hours to days</span></header>
+        <div class="loop-grid">
+          <div class="loop inner"><header class="lh"><span class="lname"> Inner loop</span><span class="lq">does this edit fix it?</span><span class="lts">&lt;1 s per check</span></header>
+            <ol class="steps"><li><div class="card k-blue "><p>Gets only the fingerprint; hypothesizes a cause from the code (e.g. Rust orders JSON keys differently). <span class="src">[A]</span><span class="src">[R]</span></p></div></li><li><div class="card k-blue "><p>Writes its own request or fake-model reply to trigger it, and can read both results in full. <span class="src">[A]</span><span class="src">[R]</span></p></div></li><li><div class="card k-blue "><p>Sandbox holds both codebases. Input check builds each prompt with no model call (&lt;1 s). Output check runs both against a fake model. <span class="src">[A]</span><span class="src">[R]</span></p></div></li><li><div class="card k-blue "><p>Same difference as the record? No: wrong guess, try again. Yes: edit the Rust until both match. <span class="src">[A]</span></p></div></li><li><div class="card k-blue "><p>Add a test that fails on old code and passes on new; open a PR. <span class="src">[A]</span><span class="src">[R]</span></p></div></li></ol>
+            <p class="back">No match on step 4: wrong guess, return to step 1.</p>
+          </div>
+          <div class="col">
+            <p class="handoff">PR from step 5 crosses the seam</p>
+            <div class="card k-peach "><p><strong>Human gate at the seam: PR review</strong> <span class="src">[A]</span><span class="src">[R]</span></p><p>Engineers judge fixes, not guesses, and what no verifier can: bug or deliberate change?</p><p>Case: web-search tool text was missing in Rust. An agent copied it into files; prompts matched, verifier passed. Engineer: "throwaway code. Abandon that PR."</p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-white "><p>Merge, deploy to a test environment, then production. Watch shadowed live traffic for the bug's fingerprint. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-white "><p>Compare builds with vs without the fix on requests of the same kind (model, caching, tools, thinking). Gone on repeated checks: close. Still there: back to the inner loop with new evidence. <span class="src">[A]</span><span class="src">[R]</span></p></div>
+            <p class="back">Fingerprint persists: return to the inner loop with new evidence.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <p class="handoff">Reviewer corrections at the seam feed this loop</p>
+        <div class="card k-peach "><p><strong>Correction becomes a rule</strong> in CLAUDE.md that every new agent reads first. After one agent guessed at Python's behavior: "port exactly what Python did." <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-blue "><p><strong>Backward sweep</strong>: an agent checks existing code against the new rule; found 7 more places the port relied on a guess. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-blue "><p><strong>Known-bug memory</strong>: the rejected web-search shortcut became a note; later records with new fingerprints were linked to it instead of spawning new workarounds. <span class="src">[A]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-blue "><p><strong>June</strong>: an agent grouped ~60 review comments into proposed rules; an engineer edited and approved them. <span class="src">[A]</span></p></div><span class="arw-d" aria-hidden="true"></span><div class="card k-white "><p><strong>Permanent checks</strong>: drift tests, lints banning flagged patterns, a merge check forcing a matching Rust change for any Python change. <span class="src">[A]</span><span class="src">[R]</span></p></div>
+        <p class="back">Rules and checks constrain every later agent in the inner loop.</p>
+      </div>
+    </div>
+  </div></section>
+
+<section id="results"><h2><span class="num">5</span>Results and rollout</h2><div class="tblwrap"><table><thead><tr><th scope="col">Metric</th><th scope="col">Result</th><th scope="col">Source</th></tr></thead><tbody><tr><th scope="row">CPU per request</th><td class="good">about -70%</td><td><span class="src">[A]</span><span class="src">[R]</span></td></tr><tr><th scope="row">Memory per request</th><td class="good">more than -80% (Ray rounds to 80%)</td><td><span class="src">[A]</span><span class="src">[R]</span></td></tr><tr><th scope="row">Median time to first token</th><td class="good">about -20% (Claude Code requests)</td><td><span class="src">[A]</span><span class="src">[R]</span></td></tr><tr><th scope="row">Prod inputs matching</th><td>24% (late Apr) to 6.5% (early May) to 99.6% (Aug)</td><td><span class="src">[A]</span><span class="src">[R]</span></td></tr><tr><th scope="row">Rust changes merged / 2 wks</th><td>&lt;100 (Apr) to ~1,000 (late Jun) to &gt;3,000 (from Aug 10)</td><td><span class="src">[A]</span></td></tr><tr><th scope="row">Public traffic on Rust</th><td>September 2026, no downtime, no feature freeze</td><td><span class="src">[A]</span></td></tr></tbody></table></div><div class="prose"><p><strong>Rollout per Ray</strong> <span class="src">[R]</span>: keep the thin Python door, ramp traffic to Rust, fall back to Python on any Rust error (slower beats no answer), then strip the door and Python at 100%. The article only says passengers moved "a few at a time" (Ship of Theseus). <span class="src">[A]</span></p><p><strong>80/20 per Ray</strong>, quoting an engineering lead from a podcast, not the article: ~80% of agent PRs were not read deeply; ~20% needed deep human work. Verifiable work is what licenses not reading every line. <span class="src">[R]</span></p></div></section>
+
+<section id="humans"><h2><span class="num">6</span>Humans move to the outer loops</h2><div class="flow-h"><div class="card k-peach "><p><strong>Inside the inner loop</strong>: engineers ran Claude and chased differences themselves. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-peach "><p><strong>At the seam</strong>: steering agents and reviewing fixes in Slack. <span class="src">[A]</span><span class="src">[R]</span></p></div><span class="arw" aria-hidden="true"></span><div class="card k-peach "><p><strong>At the edge</strong>: writing the rules and checks agents work within. <span class="src">[A]</span><span class="src">[R]</span></p></div></div><p class="lesson">From directing Claude to Claude directing itself; humans for important judgment calls. <span class="src">[A]</span></p><div class="prose"><p><strong>Osmani's frame</strong> <span class="src">[O]</span> (Ray quotes it <span class="src">[R]</span>): agents run the inner loop; engineers own the outer loop. The human sits in the <em>constraints</em> loop (inputs, architectures, instructions, invariants), the <em>sampling</em> loop, the <em>audit</em> loop and the <em>ownership</em> loop. A loop is investigate, implement, verify, repeat, where an independent check, not the model's say-so, decides done. Quality checks produce evidence; evidence feeds a Verdict; Answerability means you can explain why.</p><p><strong>Ray's meta point</strong> <span class="src">[R]</span>: the interface follows the loop. Inner-loop prompting lives in the terminal; outer-loop steering moves to Slack threads.</p></div></section>
+
+<section id="lessons"><h2><span class="num">7</span>Why it is a master class: Ray&#x27;s lessons</h2><div class="prose lessons"><ol><li><strong>Verification is the new bottleneck.</strong> Ambition scales with how fast Claude can check its own work. <span class="src">[A]</span><span class="src">[R]</span></li><li><strong>Decide how you will verify before you build.</strong> For a feature: acceptance criteria in the spec plus Playwright-style verifiers. For a migration: engineered signals. <span class="src">[R]</span></li><li><strong>Design the signal, not just the check.</strong> Checkpoints localize, fingerprints separate bugs, self-written requests reproduce, all without reading customer data. <span class="src">[A]</span><span class="src">[R]</span></li><li><strong>Turn signals into loops the agent hill-climbs alone</strong>, and keep them simple so they scale with Claude's capability: agents chose hypotheses, reproductions and fixes; verifiers judged. <span class="src">[A]</span><span class="src">[R]</span></li><li><strong>Put human judgment only into what counts as correct</strong>, and move people toward the outer loops. <span class="src">[A]</span><span class="src">[R]</span><span class="src">[O]</span></li><li><strong>Nest loops so each catches what the inner one misses</strong>: fast and imperfect (sandbox), slow and real (production), cumulative (memory). <span class="src">[A]</span></li></ol></div></section>
+
+<section id="deeper"><h2><span class="num">8</span>Deeper reads and what to steal (analysis, beyond the sources)</h2><div class="prose"><ul><li><em>Generator-verifier gap</em> [A uses Sudoku]: the NP intuition. The team did not find a cheap check; they <strong>manufactured</strong> one where none existed.</li><li><em>Specification gaming</em>: the web-search shortcut is Goodhart's law in miniature. A byte-match verifier is a proxy reward; seam review is the reward correction, the memory loop amortizes it.</li><li><em>Prior art</em>: differential testing / shadow diffing (Twitter's Diffy, GitHub's Scientist). New here: record-and-replay of the stochastic core, text-free diffs, and agents that synthesize their own witness inputs, close to counterexample-guided search.</li><li><em>Masking</em>: fingerprint A hid B and C, so the match curve is non-monotone (24% to 6.5% to 99.6%). Expect fixes to expose deeper layers.</li><li><em>Ray vs article, checked</em>: early fixes were verified on staging test traffic (Ray says production); a bug produced "hundreds of thousands" of records (Ray: "hundreds or thousands"). Rollout fallback and 80/20 come from a podcast Ray cites, unverified here.</li></ul></div><div class="callout"><p><strong>Steal for a solo AI project</strong>: build the oracle before the code; record and replay every stochastic call (LLM, clock, RNG); emit shape-only diff records and hash them into fingerprints; dispatch one agent per new fingerprint; make every correction a rule + backward sweep + lint.</p></div></section>
+</main>
+<footer><p>Rebuilt from board.json by render.py. Tags: [A] Anthropic engineering post, [R] Ray Amjad video, [O] Addy Osmani essay. Untagged italic notes are analysis.</p></footer>
+</body></html>
